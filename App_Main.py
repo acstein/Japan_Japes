@@ -15,7 +15,7 @@ def read_pins():
     data = {
         'name': ['Tokyo', 'Kyoto', 'Osaka'],
         'description': ['Capital city', 'Historic temples', 'Food paradise'],
-        'importance': [10, 8, 9],
+        'importance': [10, 2, 9],
         'lat': [35.6762, 35.0116, 34.6937],
         'lon': [139.6503, 135.7681, 135.5023]
     }
@@ -25,6 +25,22 @@ def submit_runs(data):
     return True
 
 def streamlit_app():
+    """
+    Launches the Streamlit web application for visualising and managing Japan trip locations.
+
+    This function builds a two-tab Streamlit interface:
+      • **Map tab** – Displays a dataframe of location pins and an interactive map 
+        (using Plotly Mapbox).
+      • **DB Entry tab** – Provides a simple form for submitting new locations with 
+        attributes like name, description, importance, and geographic coordinates.
+
+    The map uses a clean "carto-positron" style with pins sized and coloured 
+    according to their importance. Data is currently loaded from a static function 
+    (`read_pins()`), but the structure supports future integration with a database.
+
+    Returns:
+        None: The Streamlit app is executed directly and renders elements to the browser.
+    """
     st.title('🗾 Japan Trip Planner')
 
     pins = read_pins()
@@ -61,8 +77,8 @@ def streamlit_app():
         fig.update_layout(
             mapbox_style="carto-positron",  # soft grayscale map tiles
             mapbox_center={"lat": 36.2, "lon": 138.0},  # center on Japan
-            margin={"r":0,"t":0,"l":0,"b":0},
-            coloraxis_showscale=False,
+            margin={"r":0,"t":0,"l":0,"b":0}, # remove boarder
+            #coloraxis_showscale=False,
             showlegend=False
         )
     
