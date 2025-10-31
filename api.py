@@ -16,6 +16,8 @@ class Submitter(Enum):
 class FormFields(TypedDict):
     name: str
     description: str
+    link: str
+    place_type: str
     importance: int
     submitter: str
     lat: float

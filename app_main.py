@@ -32,12 +32,12 @@ def streamlit_app():
     Returns:
         None: The Streamlit app is executed directly and renders elements to the browser.
     """
+    # Initial app setup
     st.title("🗾 Japan Trip Planner")
-
+    tabs = st.tabs(["Map", "DB Entry"])
     places = fetch_places()
 
-    tabs = st.tabs(["Map", "DB Entry"])
-
+    # Main landing page tab
     with tabs[0]:
         st.subheader("Map of Destinations")
 
@@ -74,23 +74,33 @@ def streamlit_app():
 
             st.plotly_chart(fig, use_container_width=True)
 
+    # Tab containing form to create new rows
     with tabs[1]:
         st.header("Edit DB")
 
+        # Form fields
         name = st.text_input("Name of Spot", value="Enter Name")
         desc = st.text_input("Description", value="Enter Description")
+        link = st.text_input("Link", value="Enter URL")
+        place_type = st.selectbox(
+            "Place Type",
+            ("Activity", "Location")
+        )
         importance = st.number_input(
             "Rate Importance", min_value=0, max_value=10, value=5
         )
-        submitter = st.text_input("Who are you???", value="Tell me")
+        submitter = st.selectbox("Submitter", ("George", "Alice"))
         lat = float(st.text_input("Enter latitude", value="0.0000"))
         lon = float(st.text_input("Enter longitude", value="0.0000"))
 
+        # Form submission
         if st.button("Submit"):
             submitted = post_places(
                 {
                     "name": name,
                     "description": desc,
+                    "link": link,
+                    "place_type": place_type,
                     "importance": importance,
                     "submitter": submitter,
                     "lat": lat,
@@ -99,6 +109,7 @@ def streamlit_app():
             )
             if submitted:
                 st.text("Success!")
+                st.rerun()  # reload the app to get the latest data
 
 
 if __name__ == "__main__":
