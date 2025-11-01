@@ -7,12 +7,14 @@ Created on Mon Oct 27 18:34:16 2025
 
 from time import sleep
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.express as px
+import plotly.io as pio
+import pydeck as pdk
 
-from api import fetch_places, post_places
-
-# st.set_page_config(page_title='Japan Japes', layout='wide')
+from api import fetch_places
+from insert_form import render_insert_form
 
 
 def streamlit_app():
@@ -34,18 +36,27 @@ def streamlit_app():
     """
     # Initial app setup
     st.title("🗾 Japan Trip Planner")
-    tabs = st.tabs(["Map", "DB Entry"])
-    places = fetch_places()
+    tabs = st.tabs(["Map", "Add New Locations"])
+    df_places = fetch_places()
+
+    # Try to set plotly template based on app theme
+    theme = st.get_option("theme.base")
+    if theme == "dark":
+        pio.templates.default = "plotly_dark"
+        map_style = "carto-darkmatter"
+    else:
+        pio.templates.default = "plotly_white"
+        map_style = "carto-positron"
 
     # Main landing page tab
     with tabs[0]:
-        st.subheader("Map of Destinations")
 
-        if places is not None and len(places.index) > 0:
-            st.dataframe(places)
+        if df_places is not None and len(df_places.index) > 0:
+            st.subheader("📍 Existing Destinations")
+            st.dataframe(df_places)
 
-            fig = px.scatter_mapbox(
-                places,
+            fig = px.scatter_map(
+                df_places,
                 lat="lat",
                 lon="lon",
                 hover_name="name",
@@ -55,6 +66,8 @@ def streamlit_app():
                 color_continuous_scale=px.colors.sequential.Plotly3,
                 zoom=5,
                 height=600,
+                map_style=map_style,
+                center={"lat": 36.2, "lon": 138.0},  # center on Japan
             )
 
             # Soft crimson pin styling
@@ -62,9 +75,7 @@ def streamlit_app():
 
             # Minimalist map style and layout polish
             fig.update_layout(
-                mapbox_style="carto-positron",  # soft grayscale map tiles
-                mapbox_center={"lat": 36.2, "lon": 138.0},  # center on Japan
-                margin={"r": 0, "t": 0, "l": 0, "b": 0},  # remove boarder
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},  # remove border
                 coloraxis_showscale=False,
                 showlegend=False,
             )
@@ -76,41 +87,7 @@ def streamlit_app():
 
     # Tab containing form to create new rows
     with tabs[1]:
-        st.header("Edit DB")
-
-        # Form fields
-        name = st.text_input("Name of Spot", value="Enter Name")
-        desc = st.text_input("Description", value="Enter Description")
-        link = st.text_input("Link", value="Enter URL")
-        place_type = st.selectbox(
-            "Place Type",
-            ("Activity", "Location")
-        )
-        importance = st.number_input(
-            "Rate Importance", min_value=0, max_value=10, value=5
-        )
-        submitter = st.selectbox("Submitter", ("George", "Alice"))
-        lat = float(st.text_input("Enter latitude", value="0.0000"))
-        lon = float(st.text_input("Enter longitude", value="0.0000"))
-
-        # Form submission
-        if st.button("Submit"):
-            submitted = post_places(
-                {
-                    "name": name,
-                    "description": desc,
-                    "link": link,
-                    "place_type": place_type,
-                    "importance": importance,
-                    "submitter": submitter,
-                    "lat": lat,
-                    "lon": lon,
-                }
-            )
-            if submitted:
-                st.text("Success!")
-                st.rerun()  # reload the app to get the latest data
-
+        render_insert_form()
 
 if __name__ == "__main__":
     streamlit_app()

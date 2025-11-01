@@ -2,9 +2,9 @@ import os
 from dotenv import load_dotenv
 from typing import TypedDict
 from enum import Enum
-from hashlib import sha256
 
 import pandas as pd
+import streamlit as st
 from supabase import create_client, Client
 
 
@@ -39,6 +39,7 @@ supabase: Client = create_client(url, key)
 
 
 # --- API Functions ---
+@st.cache_data(ttl=300)  # cache data for 5 minutes
 def fetch_places() -> pd.DataFrame | None:
     response = supabase.table("Places").select("*").execute()
 
