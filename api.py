@@ -13,6 +13,7 @@ class Submitter(Enum):
     GEORGE = "George"
     ALICE = "Alice"
 
+
 class FormFields(TypedDict):
     name: str
     description: str
@@ -30,10 +31,12 @@ url: str | None = os.environ.get("SUPABASE_URL")
 key: str | None = os.environ.get("SUPABASE_KEY")
 
 # Raise error to user if required environment variables are not saved
-if (url is None):
+if url is None:
     raise ValueError("No URL provided! Ensure Supabase url is saved in a .env file.")
-elif (key is None):
-    raise ValueError("No API key provided! Ensure Supabase api key is saved in a .env file.")
+elif key is None:
+    raise ValueError(
+        "No API key provided! Ensure Supabase api key is saved in a .env file."
+    )
 
 supabase: Client = create_client(url, key)
 
@@ -47,22 +50,29 @@ def fetch_places() -> pd.DataFrame | None:
         return pd.DataFrame(response.data)
     return None
 
+
 def post_places(form_fields: FormFields) -> bool:
     new_row = {**form_fields}
     response = supabase.table("Places").insert(new_row).execute()
     return len(response.data) > 0  # at least one row of data was added
 
 
-# def update_places() -> bool:
-#     response = (
-#         supabase.table("Places").update({"name": "piano"}).eq("id", 1).execute()
-#     )
+def update_places(place_id: str, changes: dict) -> bool:
+    print(place_id, changes)
+    response = supabase.table("Places").update(changes).eq("place_id", place_id).execute()
+    if len(response.data) > 0:
+        return True  # delete completed successfully
+    else:
+        return False  # delete dailed
 
 
-# def delete_places(id: int) -> bool:
-#     response = supabase.table("countries").delete().eq("id", 1).execute()
+def delete_places(place_ids: list[str]) -> bool:
+    response = supabase.table("Places").delete().in_("place_id", place_ids).execute()
+    if len(response.data) > 0:
+        return True  # delete completed successfully
+    else:
+        return False  # delete dailed
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     fetch_places()
