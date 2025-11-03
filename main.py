@@ -5,12 +5,7 @@ Created on Mon Oct 27 18:34:16 2025
 @author: alice
 """
 
-from time import sleep
 import streamlit as st
-import streamlit.components.v1 as components
-import plotly.io as pio
-import plotly.express as px
-import pandas as pd
 
 from api import delete_places, fetch_places, update_places
 from components.insert_form import render_insert_form
@@ -48,12 +43,14 @@ def streamlit_app():
         # Section - Subheader and table
         st.subheader("Previously Saved Destinations")
 
-        col1, col2, col3 = st.columns([1, 1, 5])
+        col1, col2, col3 = st.columns(
+            [1, 1, 5]
+        )  # large right column groups buttons together
 
         with col1:
             if st.button("➕ Add Destination"):
                 render_insert_form()
-        
+
         with col2:
             button_placeholder = st.empty()
 
@@ -70,7 +67,7 @@ def streamlit_app():
             if st.button("💾 Save Table Edits", disabled=not is_df_modified):
                 if rows_to_delete:
                     delete_places(rows_to_delete)
-                
+
                 for item in rows_to_update:
                     update_places(item["place_id"], item["changes"])
 
