@@ -1,6 +1,6 @@
 # 🇯🇵 Japan Trip Planner
 
-A simple web app for storing and visualizing locations for your trip to Japan.
+A simple web app for storing and visualizing locations for our trip to Japan.
 Add destinations, view them in a table, and see them plotted on an interactive map.
 
 ## ✨ Features
