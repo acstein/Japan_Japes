@@ -18,7 +18,6 @@ def render_map(df):
         lon="lon",
         hover_name="name",
         hover_data=["description", "importance"],
-        size="importance",
         color="importance",
         color_continuous_scale=px.colors.sequential.Plotly3,
         zoom=5,
@@ -28,7 +27,7 @@ def render_map(df):
     )
 
     # Soft crimson pin styling
-    fig.update_traces(marker=dict(size=16, opacity=0.9), hoverinfo="text")
+    fig.update_traces(marker=dict(size=8, opacity=0.9), hoverinfo="text")
 
     # Minimalist map style and layout polish
     fig.update_layout(
