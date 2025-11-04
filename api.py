@@ -1,5 +1,3 @@
-import os
-from dotenv import load_dotenv
 from typing import TypedDict
 from enum import Enum
 
@@ -26,7 +24,6 @@ class FormFields(TypedDict):
 
 
 # --- Configuration ---
-load_dotenv()
 url: str | None = st.secrets["SUPABASE_URL"]
 key: str | None = st.secrets["SUPABASE_KEY"]
 
