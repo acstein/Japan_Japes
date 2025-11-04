@@ -27,8 +27,8 @@ class FormFields(TypedDict):
 
 # --- Configuration ---
 load_dotenv()
-url: str | None = os.environ.get("SUPABASE_URL")
-key: str | None = os.environ.get("SUPABASE_KEY")
+url: str | None = st.secrets["SUPABASE_URL"]
+key: str | None = st.secrets["SUPABASE_KEY"]
 
 # Raise error to user if required environment variables are not saved
 if url is None:
