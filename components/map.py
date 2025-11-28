@@ -19,7 +19,7 @@ def render_map(df):
         hover_name="name",
         hover_data=["description", "importance"],
         color="importance",
-        color_continuous_scale=px.colors.sequential.Plotly3,
+        color_continuous_scale=px.colors.sequential.YlOrRd,
         zoom=5,
         height=600,
         map_style=map_style,

@@ -1,3 +1,5 @@
+import numpy as np
+
 def save_table_edits(df_places, df_edited) -> tuple:
     # Detect deletes
     rows_to_delete: list[str] = df_edited.loc[
@@ -23,9 +25,10 @@ def save_table_edits(df_places, df_edited) -> tuple:
         changes = {}
         for col in changed.loc[row_id].index.get_level_values(0).unique():
             new_val = edit.loc[row_id, col]
-            changes[col] = (
-                new_val.item()
-            )  # call .item() to get Python native type (np.int64 cannot be passed to Supabase)
+
+            if isinstance(new_val, np.generic):
+                new_val = new_val.item()  # call .item() to get Python native type (np.int64 cannot be passed to Supabase)
+            changes[col] = new_val
         rows_to_update.append({"place_id": row_id, "changes": changes})
 
     return rows_to_delete, rows_to_update

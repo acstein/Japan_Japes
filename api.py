@@ -21,6 +21,7 @@ class FormFields(TypedDict):
     submitter: str
     lat: float
     lon: float
+    nearest_city: str
 
 
 # --- Configuration ---
@@ -60,7 +61,7 @@ def update_places(place_id: str, changes: dict) -> bool:
     if len(response.data) > 0:
         return True  # delete completed successfully
     else:
-        return False  # delete dailed
+        return False  # delete failed
 
 
 def delete_places(place_ids: list[str]) -> bool:
@@ -68,7 +69,7 @@ def delete_places(place_ids: list[str]) -> bool:
     if len(response.data) > 0:
         return True  # delete completed successfully
     else:
-        return False  # delete dailed
+        return False  # delete failed
 
 
 if __name__ == "__main__":

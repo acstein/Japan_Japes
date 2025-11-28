@@ -27,18 +27,27 @@ def render_insert_form():
     with st.form("insert_form", clear_on_submit=True):
         name = st.text_input("Name of Spot *", value="Enter Name")
         desc = st.text_input("Description *", value="Enter Description")
-        link = st.text_input("Link *", value="Enter URL")
-        place_type = st.selectbox("Place Type", ("Activity", "Location", "Food", "Accomodation"))
+        place_type = st.selectbox(
+            "Place Type", ("Activity", "Location", "Food", "Accomodation")
+        )
         importance = st.number_input("Importance", min_value=0, max_value=10, value=5)
-        submitter = st.selectbox("Submitter", ("George", "Alice"))
+        link = st.text_input("Link *", value="Enter URL")
+        nearest_city = st.text_input("Nearest City *", value="Enter Nearest City")
         lat_lon = st.text_input("Lat/Lon (Google Format) *", value="Enter Value")
+        submitter = st.selectbox("Submitter", ("George", "Alice"))
 
         submitted = st.form_submit_button("Submit")
 
     # Form submission
     if submitted:
         apply_form_validation(
-            {"Name": name, "Description": desc, "Link": link, "Lat/Lon": lat_lon}
+            {
+                "Name": name,
+                "Description": desc,
+                "Link": link,
+                "Lat/Lon": lat_lon,
+                "Submitter": submitter,
+            }
         )
         try:
             lat, lon = [float(coord) for coord in lat_lon.split(", ")]
@@ -51,12 +60,13 @@ def render_insert_form():
             {
                 "name": name,
                 "description": desc,
-                "link": link,
                 "place_type": place_type,
                 "importance": importance,
+                "link": link,
+                "nearest_city": nearest_city,
+                "lat": lat, # type: ignore
+                "lon": lon, # type: ignore
                 "submitter": submitter,
-                "lat": lat,
-                "lon": lon,
             }
         )
         if submitted:

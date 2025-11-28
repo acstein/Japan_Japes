@@ -6,10 +6,12 @@ Created on Mon Oct 27 18:34:16 2025
 """
 
 import streamlit as st
+import pandas as pd
 
 from api import delete_places, fetch_places, update_places
 from components.insert_form import render_insert_form
 from components.map import render_map
+from components.data_table import render_table
 from utils import save_table_edits
 
 
@@ -56,7 +58,8 @@ def streamlit_app():
 
         # Create top table to display all locations
         df_places["delete"] = False
-        df_edited = st.data_editor(df_places)
+        df_places["created_at"] = pd.to_datetime(df_places["created_at"])
+        df_edited = render_table(df_places=df_places)
 
         # Detect changes for saving table edits
         rows_to_delete, rows_to_update = save_table_edits(df_places, df_edited)
@@ -75,8 +78,8 @@ def streamlit_app():
                 st.cache_data.clear()
                 st.rerun()
 
-        # Section - Map
-        render_map(df_places)
+    # Section - Map
+    render_map(df_places)
 
 
 if __name__ == "__main__":
