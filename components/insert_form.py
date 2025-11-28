@@ -28,7 +28,7 @@ def render_insert_form():
         name = st.text_input("Name of Spot *", value="Enter Name")
         desc = st.text_input("Description *", value="Enter Description")
         link = st.text_input("Link *", value="Enter URL")
-        place_type = st.selectbox("Place Type", ("Activity", "Location", "Food"))
+        place_type = st.selectbox("Place Type", ("Activity", "Location", "Food", "Accomodation"))
         importance = st.number_input("Importance", min_value=0, max_value=10, value=5)
         submitter = st.selectbox("Submitter", ("George", "Alice"))
         lat_lon = st.text_input("Lat/Lon (Google Format) *", value="Enter Value")
